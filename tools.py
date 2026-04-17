@@ -1,5 +1,6 @@
 from models_.event import Event
 from models_.tickets import Ticket
+from flask_login import current_user
 
 
 def get_events():
@@ -85,3 +86,41 @@ def tickets_left(event_title):
         "event": event.title,
         "tickets_left": remaining
     }
+
+
+
+def get_user_tickets():
+
+    # user not logged in
+    if not current_user.is_authenticated:
+        return {
+            "error": "LOGIN_REQUIRED",
+            "message": "Please login to view your booked tickets."
+        }
+
+
+    tickets = (
+        Ticket.query
+        .join(Event)
+        .filter(
+            Ticket.user_id == current_user.id
+        )
+        .all()
+    )
+
+    if not tickets:
+        return {
+            "message": "You have no booked tickets."
+        }
+
+    result = []
+
+    for t in tickets:
+        result.append({
+            "event": t.event.title,
+            "date": str(t.event.event_date),
+            "ticket_id": t.id,
+            "status": t.status
+        })
+
+    return result

@@ -20,6 +20,9 @@ def run_tool(tool_name, args=None):
     elif tool_name == "tickets_left":
         return tickets_left(args.get("event_title"))
 
+    elif tool_name == "get_user_tickets":
+        return get_user_tickets()
+
     else:
         return {"error": "Unknown tool"}
 

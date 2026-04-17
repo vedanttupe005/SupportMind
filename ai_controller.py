@@ -41,7 +41,7 @@ def ask_ai(user_message):
             "function_declarations": [
                 {
                     "name": "get_events",
-                    "description": "List all available events"
+                    "description": "get details about  all available events"
                 },
                 {
                     "name": "get_event_details",
@@ -63,6 +63,15 @@ def ask_ai(user_message):
                             "event_title": {"type": "string"}
                         },
                         "required": ["event_title"]
+                    }
+                },
+                {
+                    "name": "get_user_tickets",
+                    "description":
+                        "Get tickets booked by the current user",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {}
                     }
                 }
             ]
