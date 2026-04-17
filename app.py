@@ -6,6 +6,9 @@ from ai_controller import ask_ai
 from models_.user import User
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
+from models_.tickets import Ticket
+from models_.payment import Payment
+
 import os
 load_dotenv()
 
@@ -43,6 +46,110 @@ def load_user(user_id):
 @app.route("/")
 def home():
     return render_template("chat.html")
+
+
+from flask_login import login_required, current_user
+from flask import render_template, abort
+from sqlalchemy import func
+
+   # wherever db is initialized
+
+
+@app.route("/admin/dashboard")
+@login_required
+def admin_dashboard():
+
+    # allow only admin
+    if current_user.role != "ADMIN":
+
+        abort(403)
+
+
+    # total users
+    total_users = User.query.count()
+
+
+    # total events
+    total_events = Event.query.count()
+
+
+    # total tickets sold
+    total_tickets = Ticket.query.count()
+
+
+    # total revenue
+    total_revenue = db.session.query(
+
+        func.sum(Payment.amount)
+
+    ).scalar() or 0
+
+
+    # tickets sold per event
+    tickets_per_event = (
+
+        db.session.query(
+
+            Event.title,
+
+            func.count(Ticket.id)
+
+        )
+
+        .join(Ticket)
+
+        .group_by(Event.id)
+
+        .all()
+
+    )
+
+
+    # recent bookings
+    recent_bookings = (
+
+        db.session.query(
+
+            User.email,
+
+            Event.title,
+
+            Ticket.id,
+
+            Ticket.status
+
+        )
+
+        .join(Ticket, Ticket.user_id == User.id)
+
+        .join(Event, Event.id == Ticket.event_id)
+
+        .order_by(Ticket.id.desc())
+
+        .limit(5)
+
+        .all()
+
+    )
+
+
+    return render_template(
+
+        "admin/dashboard.html",
+
+        total_users=total_users,
+
+        total_events=total_events,
+
+        total_tickets=total_tickets,
+
+        total_revenue=total_revenue,
+
+        tickets_per_event=tickets_per_event,
+
+        recent_bookings=recent_bookings
+
+    )
 
 
 @app.route("/api/chat", methods=["POST"])
