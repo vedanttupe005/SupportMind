@@ -1,0 +1,382 @@
+
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <style>
+        body{
+
+margin:0;
+
+font-family: Arial, Helvetica, sans-serif;
+
+background:#f5f7fb;
+
+}
+
+
+
+/* page layout */
+
+.auth-section{
+
+height:100vh;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+
+
+/* card */
+
+.auth-card{
+
+width:380px;
+
+background:white;
+
+padding:35px;
+
+border-radius:12px;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+
+text-align:center;
+
+}
+
+
+
+/* title */
+
+.auth-title{
+
+margin-bottom:6px;
+
+font-size:24px;
+
+color:#111;
+
+}
+
+
+
+/* subtitle */
+
+.auth-subtitle{
+
+margin-bottom:25px;
+
+color:#666;
+
+font-size:14px;
+
+}
+
+
+
+/* form */
+
+form{
+
+text-align:left;
+
+}
+
+
+
+label{
+
+display:block;
+
+margin-top:12px;
+
+margin-bottom:5px;
+
+font-size:14px;
+
+color:#333;
+
+}
+
+
+
+input{
+
+width:100%;
+
+padding:10px;
+
+border-radius:6px;
+
+border:1px solid #ddd;
+
+font-size:14px;
+
+}
+
+
+
+input:focus{
+
+outline:none;
+
+border-color:#4CAF50;
+
+}
+
+
+
+/* login button */
+
+.login-btn{
+
+width:100%;
+
+margin-top:18px;
+
+padding:11px;
+
+background:#4CAF50;
+
+color:white;
+
+border:none;
+
+border-radius:6px;
+
+font-size:15px;
+
+cursor:pointer;
+
+}
+
+
+
+.login-btn:hover{
+
+background:#43a047;
+
+}
+
+
+
+/* divider */
+
+.divider{
+
+margin:25px 0;
+
+font-size:13px;
+
+color:#999;
+
+position:relative;
+
+}
+
+
+
+.divider:before,
+
+.divider:after{
+
+content:"";
+
+position:absolute;
+
+top:50%;
+
+width:40%;
+
+height:1px;
+
+background:#ddd;
+
+}
+
+
+
+.divider:before{
+
+left:0;
+
+}
+
+
+
+.divider:after{
+
+right:0;
+
+}
+
+
+
+/* google button */
+
+.google-btn{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:10px;
+
+border:1px solid #ddd;
+
+padding:10px;
+
+border-radius:6px;
+
+text-decoration:none;
+
+color:#333;
+
+font-size:14px;
+
+transition:0.2s;
+
+}
+
+
+
+.google-btn:hover{
+
+background:#f8f8f8;
+
+}
+
+
+
+.google-btn svg{
+
+width:18px;
+
+height:18px;
+
+}
+    </style>
+
+<title>Login | AI HelpCare</title>
+</head>
+
+
+<body>
+
+
+<section class="auth-section">
+
+
+<div class="auth-card">
+
+
+<h2 class="auth-title">
+Welcome Back
+</h2>
+
+
+<p class="auth-subtitle">
+Login to continue using AI HelpCare
+</p>
+
+
+
+<form action="{{ url_for('login') }}" method="POST">
+
+
+<label>Email</label>
+
+<input
+type="email"
+name="email"
+placeholder="Enter your email"
+required
+>
+
+
+<label>Password</label>
+
+<input
+type="password"
+name="password"
+placeholder="Enter password"
+required
+>
+
+
+<button type="submit" class="login-btn">
+
+Login
+
+</button>
+
+
+</form>
+
+
+
+<div class="divider">
+
+OR
+
+</div>
+
+
+
+<a
+href="{{ url_for('google_login') }}"
+class="google-btn"
+>
+
+
+<svg viewBox="0 0 256 262">
+
+<path fill="#4285F4"
+d="M255.878 133.451c0-10.734-.871-18.567-2.756-26.69H130.55v48.448h71.947c-1.45 12.04-9.283 30.172-26.69 42.356l-.244 1.622 38.755 30.023 2.685.268c24.659-22.774 38.875-56.282 38.875-96.027"/>
+
+
+<path fill="#34A853"
+d="M130.55 261.1c35.248 0 64.839-11.605 86.453-31.622l-41.196-31.913c-11.024 7.688-25.82 13.055-45.257 13.055-34.523 0-63.824-22.773-74.269-54.25l-1.531.13-40.298 31.187-.527 1.465C35.393 231.798 79.49 261.1 130.55 261.1"/>
+
+
+<path fill="#FBBC05"
+d="M56.281 156.37c-2.756-8.123-4.351-16.827-4.351-25.82 0-8.994 1.595-17.697 4.206-25.82l-.073-1.73L15.26 71.312l-1.335.635C5.077 89.644 0 109.517 0 130.55s5.077 40.905 13.925 58.602l42.356-32.782"/>
+
+
+<path fill="#EB4335"
+d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"/>
+
+</svg>
+
+
+<span>
+
+Continue with Google
+
+</span>
+
+
+</a>
+
+
+
+</div>
+
+
+</section>
+
+
+</body>
+
+</html>
