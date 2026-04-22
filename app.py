@@ -20,7 +20,9 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 
 
 app = Flask(__name__)
+
 app.config.from_object(Config)
+
 db.init_app(app)
 
 login_manager = LoginManager(app)
@@ -248,6 +250,7 @@ def logout():
         url_for("home")
     )
 
+print(os.getenv("DATABASE_URL"))
 
 
 if __name__ == "__main__":
