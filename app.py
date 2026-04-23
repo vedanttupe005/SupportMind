@@ -156,19 +156,30 @@ def admin_dashboard():
 
 @app.route("/api/chat", methods=["POST"])
 def chat():
+    try:
+        data = request.get_json()
+        user_message = data.get("message")
 
-    data = request.get_json()
+        if not user_message:
+            return jsonify({
+                "status": "error",
+                "response": "Message is required"
+            }), 200
 
-    user_message = data.get("message")
+        response = ask_ai(user_message)
 
-    if not user_message:
-        return jsonify({"error": "Message is required"}), 400
+        return jsonify({
+            "status": "success",
+            "response": response
+        }), 200
 
-    response = ask_ai(user_message)
+    except Exception as e:
+        print("ERROR:", str(e))  # log for debugging
 
-    return jsonify({
-        "response": response
-    })
+        return jsonify({
+            "status": "error",
+            "response": "AI is currently busy. Please try again."
+        }), 200
 
 
 @app.route('/login', methods=['GET','POST'])
