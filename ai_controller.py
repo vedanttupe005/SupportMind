@@ -1,4 +1,4 @@
-from google.generativeai import genai
+from google import genai
 import os
 import time
 import random
