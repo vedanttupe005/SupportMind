@@ -76,7 +76,9 @@ def ask_ai(user_message):
         3. NEVER say "I don't have data"
         4. DO NOT answer from memory
         5. If data is needed → MUST call tool
-
+        6. If tool returns error or no data → say "Sorry, I couldn't fetch that information right now."
+        
+        
         IMPORTANT:
         - Some data is admin-only (revenue, analytics, users)
         - If user is not admin, do NOT attempt to access admin data
