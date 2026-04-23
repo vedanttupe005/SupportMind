@@ -15,9 +15,11 @@ class Event(db.Model):
     venue = db.Column(db.String(255), nullable=False)
     event_date = db.Column(db.DateTime, nullable=False)
 
-    price = db.Column(db.Numeric(10, 2), nullable=False)
+    total_tickets = db.Column(db.Integer, nullable=False,default=100)
 
-    total_tickets = db.Column(db.Integer, nullable=False)
+    tickets_sold = db.Column(db.Integer, default=0)
+
+    price = db.Column(db.Numeric(10, 2), nullable=False)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
@@ -35,5 +37,4 @@ class Event(db.Model):
     )
 
     def get_remaining_tickets(self):
-        booked = Ticket.query.filter_by(event_id=self.id).count()
-        return self.total_tickets - booked
+        return self.total_tickets - self.tickets_sold

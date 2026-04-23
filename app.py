@@ -8,6 +8,7 @@ from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 from models_.tickets import Ticket
 from models_.payment import Payment
+import requests
 
 import os
 load_dotenv()
@@ -55,6 +56,49 @@ from flask import render_template, abort
 from sqlalchemy import func
 
    # wherever db is initialized
+
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+def send_telegram_message(chat_id, text):
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+
+    payload = {
+        "chat_id": chat_id,
+        "text": text
+    }
+
+    requests.post(url, json=payload)
+
+
+@app.route("/telegram/webhook", methods=["POST"])
+def telegram_webhook():
+    try:
+        data = request.get_json()
+
+        # Ignore non-message updates
+        if "message" not in data:
+            return {"status": "ignored"}
+
+        chat_id = data["message"]["chat"]["id"]
+        user_message = data["message"].get("text", "")
+
+        if not user_message:
+            send_telegram_message(chat_id, "Please send a valid message.")
+            return {"status": "ok"}
+
+        # 🔥 Directly call YOUR AI
+        ai_reply = ask_ai(user_message)
+
+        send_telegram_message(chat_id, ai_reply)
+
+        return {"status": "ok"}
+
+    except Exception as e:
+        print("TELEGRAM ERROR:", str(e))
+        return {"status": "error"}
+
+
+
 
 
 @app.route("/admin/dashboard")
@@ -111,25 +155,17 @@ def admin_dashboard():
     recent_bookings = (
 
         db.session.query(
-
             User.email,
-
             Event.title,
-
             Ticket.id,
-
             Ticket.status
 
         )
 
         .join(Ticket, Ticket.user_id == User.id)
-
         .join(Event, Event.id == Ticket.event_id)
-
         .order_by(Ticket.id.desc())
-
         .limit(5)
-
         .all()
 
     )

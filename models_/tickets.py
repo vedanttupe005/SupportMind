@@ -49,3 +49,4 @@ class Ticket(db.Model):
     user = db.relationship("User", back_populates="tickets")
     event = db.relationship("Event", back_populates="tickets")
     payment = db.relationship("Payment", back_populates="tickets")
+

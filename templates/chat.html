@@ -1,251 +1,261 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
     <title>AI HelpCare</title>
-
     <style>
-
-        body{
-            font-family: Arial;
-            background:#f5f5f5;
-            margin:0;
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
         }
 
-        /* top bar */
+        /* Navbar */
+        #navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 28px;
+            background: white;
+            border-bottom: 1px solid #e8e8e8;
+        }
+        #logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #logo::before {
+            content: '';
+            display: inline-block;
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #1D9E75;
+        }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .greeting {
+            font-size: 14px;
+            color: #666;
+        }
+        .btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-dashboard { background: #185FA5; color: #dbeeff; }
+        .btn-dashboard:hover { background: #0c4480; }
+        .btn-logout { background: #993C1D; color: #fde8df; }
+        .btn-logout:hover { background: #7a2e13; }
 
-        #navbar{
-
-            display:flex;
-
-            justify-content:space-between;
-
-            align-items:center;
-
-            padding:15px 30px;
-
-            background:white;
-
-            box-shadow:0 2px 6px rgba(0,0,0,0.05);
+        /* Chat layout */
+        .chat-wrap {
+            display: flex;
+            justify-content: center;
+            padding: 32px 16px;
+        }
+        .chat-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e8e8e8;
+            width: 100%;
+            max-width: 580px;
+            overflow: hidden;
         }
 
-        #logo{
-
-            font-size:20px;
-
-            font-weight:bold;
-
+        /* Chat header */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .ai-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #E1F5EE;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .chat-title { font-size: 15px; font-weight: 600; color: #111; }
+        .chat-subtitle { font-size: 12px; color: #1D9E75; margin-top: 1px; }
+        .status-dot {
+            display: inline-block;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #1D9E75;
+            margin-right: 4px;
+            vertical-align: middle;
         }
 
-        #login-btn{
+        /* Messages */
+        #chat {
+            padding: 20px;
+            height: 360px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .msg { display: flex; align-items: flex-end; gap: 8px; }
+        .msg.user { flex-direction: row-reverse; }
+        .bubble {
+            padding: 10px 15px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.55;
+            max-width: 72%;
+        }
+        .msg.ai .bubble {
+            background: #f4f4f5;
+            color: #111;
+            border-radius: 4px 18px 18px 18px;
+        }
+        .msg.user .bubble {
+            background: #1D9E75;
+            color: #e8faf3;
+            border-radius: 18px 18px 4px 18px;
+        }
+        .msg.ai.error .bubble { background: #fee2e2; color: #b91c1c; }
+        .mini-avatar {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 11px; font-weight: 600;
+            flex-shrink: 0;
+        }
+        .mini-avatar.ai-icon { background: #E1F5EE; color: #0F6E56; }
+        .mini-avatar.user-icon { background: #9FE1CB; color: #085041; }
 
-            background:#4CAF50;
-
-            color:white;
-
-            padding:8px 16px;
-
-            border:none;
-
-            border-radius:6px;
-
-            cursor:pointer;
-
-            text-decoration:none;
+        /* Typing */
+        #typing {
+            display: none;
+            align-items: flex-end;
+            gap: 8px;
+        }
+        .typing-bubble {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 15px;
+            background: #f4f4f5;
+            border-radius: 4px 18px 18px 18px;
+        }
+        .typing-bubble span {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: #aaa;
+            animation: bounce 1.2s infinite;
+        }
+        .typing-bubble span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-bubble span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
         }
 
-        #login-btn:hover{
-
-            background:#45a049;
+        /* Input */
+        #input-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 16px;
+            border-top: 1px solid #f0f0f0;
+            background: white;
         }
-
-        /* chat */
-
-        #chat-container{
-
-            width:420px;
-
-            margin:40px auto;
-
-            background:white;
-
-            border-radius:10px;
-
-            box-shadow:0 0 10px rgba(0,0,0,0.1);
-
-            padding:20px;
+        #message {
+            flex: 1;
+            background: #f4f4f5;
+            border: 1px solid transparent;
+            border-radius: 24px;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #111;
+            outline: none;
+            transition: border-color 0.15s;
         }
-
-        #chat{
-
-            height:350px;
-
-            overflow-y:auto;
-
-            margin-bottom:10px;
+        #message::placeholder { color: #aaa; }
+        #message:focus { border-color: #1D9E75; background: white; }
+        .send-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #1D9E75;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background 0.15s;
         }
-
-        .user{
-
-            text-align:right;
-
-            margin:8px 0;
-        }
-
-        .ai{
-
-            text-align:left;
-
-            margin:8px 0;
-        }
-
-        .bubble{
-
-            display:inline-block;
-
-            padding:10px 14px;
-
-            border-radius:14px;
-
-            max-width:70%;
-        }
-
-        .user .bubble{
-
-            background:#4CAF50;
-
-            color:white;
-        }
-
-        .ai .bubble{
-
-            background:#e5e5ea;
-        }
-
-        #typing{
-
-            font-style:italic;
-
-            color:gray;
-
-            display:none;
-
-            margin-bottom:10px;
-        }
-
-        #input-area{
-
-            display:flex;
-
-            gap:10px;
-        }
-
-        #message{
-
-            flex:1;
-
-            padding:10px;
-        }
-
-        button{
-
-            padding:10px 15px;
-        }
-
-        .ai.error .bubble {
-    background: #fee2e2;
-    color: #b91c1c;
-}
+        .send-btn:hover { background: #0F6E56; }
+        .send-btn svg { width: 18px; height: 18px; }
     </style>
-
 </head>
-
-
 <body>
 
-
-<!-- top navigation -->
-
 <div id="navbar">
-
-    <div id="logo">
-        AI HelpCare
-    </div>
-
-    <div>
-
+    <div id="logo">AI HelpCare</div>
+    <div class="nav-right">
         {% if current_user.is_authenticated %}
-
-            <span style="margin-right:15px;">
-                Hello, {{ current_user.name }}
-            </span>
-
+            <span class="greeting">Hello, {{ current_user.name }}</span>
             {% if current_user.role == "ADMIN" %}
-
-                <a href="{{ url_for('admin_dashboard') }}"
-                   id="login-btn"
-                   style="background:#0275d8; margin-right:15px;">
-                   Dashboard
-                </a>
-
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-dashboard">Dashboard</a>
             {% endif %}
-
-            <a href="{{ url_for('logout') }}"
-               id="login-btn"
-               style="background:#d9534f;">
-               Logout
-            </a>
-
+            <a href="{{ url_for('logout') }}" class="btn btn-logout">Logout</a>
         {% else %}
-
-            <a href="{{ url_for('login') }}"
-               id="login-btn">
-               Login
-            </a>
-
+            <a href="{{ url_for('login') }}" class="btn btn-dashboard">Login</a>
         {% endif %}
-
     </div>
-
 </div>
 
+<div class="chat-wrap">
+    <div class="chat-card">
+        <div class="chat-header">
+            <div class="ai-avatar">🤖</div>
+            <div>
+                <div class="chat-title">AI Assistant</div>
+                <div class="chat-subtitle"><span class="status-dot"></span>Online</div>
+            </div>
+        </div>
 
+        <div id="chat"></div>
 
-<!-- chat container -->
+        <div id="typing">
+            <div class="mini-avatar ai-icon">AI</div>
+            <div class="typing-bubble">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
 
-<div id="chat-container">
-
-<h3>AI Assistant</h3>
-
-<div id="chat"></div>
-
-<div id="typing">
-    AI is typing...
+        <div id="input-area">
+            <input type="text" id="message" placeholder="Ask about events..." />
+            <button class="send-btn" onclick="sendMessage()">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 12h14M13 6l6 6-6 6" stroke="white" stroke-width="2"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
+    </div>
 </div>
-
-
-<div id="input-area">
-
-    <input
-        type="text"
-        id="message"
-        placeholder="Ask about events..."
-    >
-
-    <button onclick="sendMessage()">
-        Send
-    </button>
-
-</div>
-
-</div>
-
-
 
 <script src="/static/js/chat.js"></script>
-
-
 </body>
-
 </html>
